@@ -302,11 +302,8 @@ public class Table
         String [] t_attrs = attributes1.split (" ");
         String [] u_attrs = attributes2.split (" ");
         
-        boolean conTNU = TRUE;
-        
         //see if the input was formatted properly and if not we print an error
         if(t_attrs.length != u_attrs.length){
-            conTNU = false;
             System.out.println("your attributes were crap and did not have the same number for either table.");
             return null;
         }
@@ -329,22 +326,8 @@ public class Table
         }
         //this one fills the new attr arraylist with the attributes from the second table
         //,but renames them if they are the same as one in the first table
-        for (String attribute1 : table2.attribute) {
-            for (int i = 0; i < this.attribute.length; i++) {
-                if (attribute1.equals(this.attribute[i])) {
-                    String tempAttr = attribute1 + '2';
-                    jtAttrs[attrPos] = tempAttr;
-                    for(int k = 0; k < u_attrs.length; k++){
-                        if(u_attrs[k].equals(attribute1)){
-                            u_attrs[k] = tempAttr;
-                            break;
-                        }
-                    }
-                    break;
-                } else if (i == (this.attribute.length - 1)) {
-                    jtAttrs[attrPos] = attribute1;
-                }
-            }
+        for (int k = 0; k < table2.attribute.length; k++) {
+            jtAttrs[attrPos] = table2.attribute[k] + "2";
             attrPos++;
         }
         
@@ -361,37 +344,26 @@ public class Table
         
         //create our temporary result table using the combined attribute and domain arrays
         Table result = new Table ((name + count++), jtAttrs, jtDom, key);
-	Table tempTable = result;
+	
+        boolean addT = false;
         
-        //cartesian product of the 2 arrays
         for(int i = 0; i < this.tuples.size(); i++){
-            for(int m = 0; m < table2.tuples.size(); m++){
-                Comparable[] tempTup = new Comparable[result.attribute.length];
-                System.arraycopy(this.tuples.get(i), 0, tempTup, 0, this.tuples.get(i).length);
-                System.arraycopy(table2.tuples.get(m), 0, tempTup, this.tuples.get(i).length, table2.tuples.get(m).length);
-                tempTable.insert(tempTup);
+            for(int j = 0; j < table2.tuples.size(); j++){
+                Comparable [] tuple1 = this.tuples.get(i);
+                Comparable [] tuple2 = table2.tuples.get(j);
+                addT = false;
+                for(int m = 0; m < t_attrs.length; m++){
+                    if(tuple1[this.col(t_attrs[m])] == tuple2[table2.col(u_attrs[m])]){
+                        addT = true;
+                    }else {
+                        break;
+                    }
+                }
+                if(addT){
+                    result.insert(ArrayUtil.concat(tuple1, tuple2)); 
+                }
             }
         }
-
-	//fill our result table
-	for (int j = 0; j < t_attrs.length; j++) {
-	    //grab our column from first table
-	    int temp1 = tempTable.col(t_attrs[j]);
-	    int temp2 = tempTable.col(u_attrs[j]);
-	    for (int m = 0; m < tempTable.tuples.size(); m++) {
-		//grab each tuple from our cartesian table
-		Comparable[] tempTuple = tempTable.tuples.get(m);
-		Comparable tempVal = tempTuple[tempTable.col(u_attrs[j])];
-		Table temp = tempTable.select(p -> p[temp1].equals(temp2));
-		//tempTable = temp;
-		out.println ();
-		temp.print();
-		for (int h = 0; h > temp.tuples.size(); h++) {
-		    result.insert(temp.tuples.get(h));
-		}
-	    }
-
-	}
 
         return result;
     } // join
