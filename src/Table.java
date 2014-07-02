@@ -377,7 +377,7 @@ public class Table
 	for (int j = 0; j < t_attrs.length; j++) {
 	    //grab our column from first table
 	    int temp1 = tempTable.col(t_attrs[j]);
-	    int temp2 = tempTable.col(u_attrs[j]);e
+	    int temp2 = tempTable.col(u_attrs[j]);
 	    for (int m = 0; m < tempTable.tuples.size(); m++) {
 		//grab each tuple from our cartesian table
 		Comparable[] tempTuple = tempTable.tuples.get(m);
