@@ -138,14 +138,17 @@ public class ExtHashMap <K, V>
         int    i = h (key);
         if(nBuckets == 0){
             hTable.add(new Bucket());
+            hTable.add(new Bucket());
             dir.add(new Bucket());
-            nBuckets++;
-            mod++;
+            dir.add(new Bucket());
+            nBuckets = 2;
+            mod = 2;
         }
-        Bucket b = dir.get(i);
-        hTable.add(b);
+            Bucket b = dir.get(i);
+        
+        //hTable.add(b);
         //this.hTable.add(b);
-
+                
         
         
         if(b.nKeys < SLOTS){//Add the key/value to the bucket.
