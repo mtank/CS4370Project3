@@ -133,7 +133,7 @@ class MovieDB
         t_join.print ();
 
         out.println ();
-        Table t_join2 = movie.join ("title year", "title year", cinema);
+        Table t_join2 = movie.indexJoin ("title year", "title year", cinema);
         t_join2.print ();
 
     } // main

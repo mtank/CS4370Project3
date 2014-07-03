@@ -57,21 +57,62 @@ public class TestTupleGenerator
 
         String [] tables = { "Student", "Professor", "Course", "Transcript", "Teaching" };
         
-        int tups [] = new int [] { 10000, 1000, 2000, 50000, 5000 };
+        int tups [] = new int [] { 100, 1000, 2000, 500, 5000 };
     
-        Comparable [][][] resultTest = test.generate (tups);
-        
-        for (int i = 0; i < resultTest.length; i++) {
-            out.println (tables [i]);
-            for (int j = 0; j < resultTest [i].length; j++) {
-                for (int k = 0; k < resultTest [i][j].length; k++) {
-                    out.print (resultTest [i][j][k] + ",");
-                } // for
-                out.println ();
-            } // for
-            out.println ();
-        } // for
-    } // main
+        long sumJoin = 0;
+        int runCount = 1;
 
-} // TestTupleGenerator
+        for (int i = 0; i < 20; i++) {
+            Comparable[][][] resultTest = test.generate(tups);
+
+//        for (int i = 0; i < resultTest.length; i++) {
+//            out.println (tables [i]);
+//            for (int j = 0; j < resultTest [i].length; j++) {
+//                for (int k = 0; k < resultTest [i][j].length; k++) {
+//                    out.print (resultTest [i][j][k] + ",");
+//                } // for
+//                out.println ();
+//            } // for
+//            out.println ();
+//        } // for
+            String student = "id name address status gpa";
+            String domain = "Integer String String String Double";
+
+            String transAttr = "studId crsCode semester grade";
+            String transDom = "Integer String String String";
+
+            Table table1 = new Table("Student", student, domain, "id");
+            Table table2 = new Table("Transcript", transAttr, transDom, "studId");
+
+            //inserts each tuple into the table
+            for (int k = 0; k < resultTest[0].length; k++) {
+                table1.insert(resultTest[0][k]);
+            }
+
+            for (int x = 0; x < resultTest[3].length; x++) {
+                table2.insert(resultTest[3][x]);
+            }
+
+            long startTime = System.currentTimeMillis() * 10^5;
+            Table result1 = table1.indexJoin("id", "studId", table2);
+            long endTime = System.currentTimeMillis() * 10^5;
+
+            sumJoin = sumJoin + (endTime - startTime);
+            System.out.println("run time: " + (endTime - startTime));
+            System.out.println("run number: " + runCount);
+            runCount++;
+
+        //sumRange = sumRange+(endTime-startTime);
+            //System.out.println("Range search time: "+(endTime-startTime));
+            /* startTime = System.currentTimeMillis();
+             Table result2 = table.select("id == "+idMatch);
+             endTime = System.currentTimeMillis();*/
+        //sumPoint = sumPoint+(endTime-startTime);
+            //System.out.println("Point search time: "+(endTime-startTime));
+        }
+
+        System.out.println("Join search avg: " + sumJoin / 20);
+        System.out.println("Join search std dev: " + (sumJoin / 20) / Math.sqrt(20));
+    }
+    } // TestTupleGenerator
 
