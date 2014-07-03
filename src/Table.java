@@ -368,6 +368,83 @@ public class Table
         return result;
     } // join
 
+    
+    /************************************************************************************
+     *
+     * @param table2      the rhs table in the join operation
+     * @return  a table with tuples satisfying the equality predicate
+     */
+    public Table indexJoin (String attributes1, String attributes2, Table table2)
+    {
+
+        out.println ("RA> " + name + ".join (" + attributes1 + ", " + attributes2 + ", "
+                                               + table2.name + ")");
+
+        String [] t_attrs = attributes1.split (" ");
+        String [] u_attrs = attributes2.split (" ");
+        
+        //see if the input was formatted properly and if not we print an error
+        if(t_attrs.length != u_attrs.length){
+            System.out.println("your attributes were crap and did not have the same number for either table.");
+            return null;
+        }
+        
+        //creates a length value for domains and attributes to create a temp result table
+        int attrLen = this.attribute.length + table2.attribute.length;
+        int domLen = this.domain.length + table2.domain.length;
+        //int keyLen = this.key.length + table2.key.length;
+        
+        //use the new lengths and create temp attr array and temp domain array
+        String [] jtAttrs = new String[attrLen];
+        Class [] jtDom = new Class[domLen];
+        //String [] jtKey = new String[keyLen];
+        
+        //adds the attrs from the first table to our new attribute list
+        int attrPos = 0;
+        for (String attribute1 : this.attribute) {
+            jtAttrs[attrPos] = attribute1;
+            attrPos++;
+        }
+        //this one fills the new attr arraylist with the attributes from the second table
+        //,but renames them if they are the same as one in the first table
+        for (int k = 0; k < table2.attribute.length; k++) {
+            jtAttrs[attrPos] = table2.attribute[k] + "2";
+            attrPos++;
+        }
+        
+        //fill the new domain arraylist with the domains from the first and second table
+        int domPos = 0;
+        for (Class domain1 : this.domain) {
+            jtDom[domPos] = domain1;
+            domPos++;
+        }
+        for (Class domain1 : table2.domain) {
+            jtDom[domPos] = domain1;
+            domPos++;
+        }
+        
+        //create our temporary result table using the combined attribute and domain arrays
+        Table result = new Table ((name + count++), jtAttrs, jtDom, key);
+	
+        
+        
+        for (int i = 0; i < this.tuples.size(); i++) {
+            Comparable[] tuple1 = this.tuples.get(i);
+            Comparable[] tempKeys = new Comparable[t_attrs.length];
+            for(int j = 0; j < t_attrs.length; j++){
+                Comparable tupVal = tuple1[this.col(t_attrs[j])];
+                tempKeys[j] = tupVal;
+            }
+            Comparable[] tuple2 = table2.index.get(new KeyType(tempKeys));
+            if(tuple2 != null){
+                result.insert(ArrayUtil.concat(tuple1, tuple2));
+            }
+        }
+
+        return result;
+    } // join
+    
+    
     /************************************************************************************
      * Return the column position for the given attribute name.
      *
