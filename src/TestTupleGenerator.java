@@ -6,6 +6,7 @@
  */
 
 import static java.lang.System.out;
+import java.util.Random;
 
 /*****************************************************************************************
  * This class tests the TupleGenerator on the Student Registration Database defined in the
@@ -55,9 +56,9 @@ public class TestTupleGenerator
                                             { "crsCode", "Course", "crsCode" },
                                             { "crsCode semester", "Teaching", "crsCode semester" }});
 
-        String [] tables = { "Student", "Professor", "Course", "Transcript", "Teaching" };
+        String [] tables = { "Student", "Professor", "Course", "Teaching", "Transcript" };
         
-        int tups [] = new int [] { 100, 1000, 2000, 500, 5000 };
+        int tups [] = new int [] { 10000, 1, 1, 1, 1 };
     
         long sumJoin = 0;
         int runCount = 1;
@@ -75,8 +76,8 @@ public class TestTupleGenerator
 //            } // for
 //            out.println ();
 //        } // for
-            String student = "id name address status gpa";
-            String domain = "Integer String String String Double";
+            String student = "id name address status";
+            String domain = "Integer String String String";
 
             String transAttr = "studId crsCode semester grade";
             String transDom = "Integer String String String";
@@ -89,26 +90,27 @@ public class TestTupleGenerator
                 table1.insert(resultTest[0][k]);
             }
 
-            for (int x = 0; x < resultTest[3].length; x++) {
-                table2.insert(resultTest[3][x]);
+            for (int x = 0; x < resultTest[4].length; x++) {
+                table2.insert(resultTest[4][x]);
             }
-
+	    
+	    Random gen = new Random();
+	    int idM = gen.nextInt(1000000);
+	    KeyType tempType = new KeyType(idM);
+	    
             long startTime = System.currentTimeMillis() * 10^5;
-            Table result1 = table1.indexJoin("id", "studId", table2);
-            long endTime = System.currentTimeMillis() * 10^5;
+	    System.out.println(startTime);
+            //Table result1 = table1.indexJoin("id", "studId", table2);
+	    //System.out.println(endTime);
+             Table result2 = table1.select(tempType);
+             long endTime = System.currentTimeMillis() * 10^5;
+	    
 
             sumJoin = sumJoin + (endTime - startTime);
             System.out.println("run time: " + (endTime - startTime));
             System.out.println("run number: " + runCount);
             runCount++;
-
-        //sumRange = sumRange+(endTime-startTime);
-            //System.out.println("Range search time: "+(endTime-startTime));
-            /* startTime = System.currentTimeMillis();
-             Table result2 = table.select("id == "+idMatch);
-             endTime = System.currentTimeMillis();*/
-        //sumPoint = sumPoint+(endTime-startTime);
-            //System.out.println("Point search time: "+(endTime-startTime));
+	    
         }
 
         System.out.println("Join search avg: " + sumJoin / 20);

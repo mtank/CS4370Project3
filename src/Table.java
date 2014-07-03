@@ -80,7 +80,8 @@ public class Table
         domain    = _domain;
         key       = _key;
         tuples    = new ArrayList <> ();
-        index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
+	index = new TreeMap <> ();
+        //index     = new BpTreeMap (KeyType.class, Comparable[].class);       // also try BPTreeMap, LinHashMap or ExtHashMap
     } // constructor
 
     /************************************************************************************
@@ -100,7 +101,8 @@ public class Table
         domain    = _domain;
         key       = _key;
         tuples    = _tuples;
-        index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
+	index = new TreeMap <> ();
+        //index     = new BpTreeMap (KeyType.class, Comparable[].class);       // also try BPTreeMap, LinHashMap or ExtHashMap
     } // constructor
 
     /************************************************************************************
@@ -114,7 +116,7 @@ public class Table
     {
         this (name, attributes.split (" "), findClass (domains.split (" ")), _key.split(" "));
 
-        out.println ("DDL> create table " + name + " (" + attributes + ")");
+        //out.println ("DDL> create table " + name + " (" + attributes + ")");
     } // constructor
 
     //----------------------------------------------------------------------------------
@@ -195,7 +197,7 @@ public class Table
         try{
             //getting the tuple [] that satisfies the keyVal
             Comparable [] tempTuples = index.get(keyVal);
-            if(tempTuples.length > 0){
+            if(tempTuples != null){
                 //if the keyVal exists, initialize the List rows and add the tuple [] to rows
                 rows = new ArrayList <> ();
                 rows.add(tempTuples);
@@ -296,8 +298,8 @@ public class Table
      */
     public Table join (String attributes1, String attributes2, Table table2)
     {
-        out.println ("RA> " + name + ".join (" + attributes1 + ", " + attributes2 + ", "
-                                               + table2.name + ")");
+//        out.println ("RA> " + name + ".join (" + attributes1 + ", " + attributes2 + ", "
+//                                               + table2.name + ")");
 
         String [] t_attrs = attributes1.split (" ");
         String [] u_attrs = attributes2.split (" ");
@@ -470,7 +472,7 @@ public class Table
      */
     public boolean insert (Comparable [] tup)
     {
-        out.println ("DML> insert into " + name + " values ( " + Arrays.toString (tup) + " )");
+//        out.println ("DML> insert into " + name + " values ( " + Arrays.toString (tup) + " )");
 
         if (typeCheck (tup)) {
             tuples.add (tup);
