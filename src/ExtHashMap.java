@@ -137,7 +137,10 @@ public class ExtHashMap <K, V>
     {
         int    i = h (key);
         Bucket b = dir.get (i);
+        hTable.add(b);
+        //this.hTable.add(b);
 
+        
         
         if(b.nKeys < SLOTS){//Add the key/value to the bucket.
             b.key[b.nKeys] = key;
@@ -147,9 +150,17 @@ public class ExtHashMap <K, V>
         
         else{//Add a bucket to hTable and increment mod. Then recursively call put().
             this.mod = this.mod++;
-            this.hTable.add(b);
-            put(key, value);
+            for(int x = 0; x < Math.pow(2, mod)/2; x++){
+                hTable.add(new Bucket());
+            }
+            i = h (key);
+            b = dir.get (i);
+            b.key[b.nKeys] = key;
+            b.value[b.nKeys] = value;
+            b.nKeys++;
         }//else
+        
+        
         
         return null;
     } // put
