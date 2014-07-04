@@ -137,9 +137,11 @@ public class ExtHashMap <K, V>
     {
         int    i = h (key);
         if(nBuckets > dir.size()){
-            while(nBuckets > dir.size())
+            while(nBuckets > dir.size()){
                 hTable.add(new Bucket());
                 dir.add(new Bucket());
+                System.out.println(dir.size());
+            }
         }
             Bucket b = dir.get(i);
         
@@ -152,6 +154,7 @@ public class ExtHashMap <K, V>
             b.key[b.nKeys] = key;
             b.value[b.nKeys] = value;
             b.nKeys++;
+            System.out.println("if...");
         }//if
         
         else{//Add a bucket to hTable and increment mod. Then recursively call put().
@@ -160,6 +163,7 @@ public class ExtHashMap <K, V>
                 hTable.add(new Bucket());
                 dir.add(new Bucket());
                 nBuckets++;
+                System.out.println("working");
             }
             i = h (key);
             b = dir.get (i);
@@ -193,7 +197,7 @@ public class ExtHashMap <K, V>
         
         for(int i=0; i<hTable.size();i++){//Increment through hTable
             out.print(i + ":");
-            Bucket b = dir.get(i);
+            Bucket b = hTable.get(i);
             out.print("[ ");
             for(int j = 0; j < 4; j++){//Increment through dir
                 out.print(b.key + " / " + b.value);
