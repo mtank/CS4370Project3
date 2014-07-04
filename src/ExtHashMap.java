@@ -136,13 +136,10 @@ public class ExtHashMap <K, V>
     public V put (K key, V value)
     {
         int    i = h (key);
-        if(nBuckets == 0){
-            hTable.add(new Bucket());
-            hTable.add(new Bucket());
-            dir.add(new Bucket());
-            dir.add(new Bucket());
-            nBuckets = 2;
-            mod = 2;
+        if(nBuckets > dir.size()){
+            while(nBuckets > dir.size())
+                hTable.add(new Bucket());
+                dir.add(new Bucket());
         }
             Bucket b = dir.get(i);
         
